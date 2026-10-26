@@ -29,7 +29,7 @@ assert parsed.links.count("https://esforzados.com/") >= 1
 assert len(parsed.images) == 1, "Solo debe usarse la primera imagen aprobada del carrusel"
 assert parsed.images[0].endswith("/assets/carousel-legal.png")
 assert any(f.get("action") == "acceso.php" and f.get("method") == "post" for f in parsed.forms)
-assert re.search(r"\\$2\\.00", html) and "US$0.6593" in html
+assert "$2.00" in html and "US$0.6593" in html
 assert "$11.00" not in html and "$12.19705" in html
 js = (ROOT / "assets/legal.js").read_text(encoding="utf8")
 assert "USD_RATE_1E4 = 6593" in js and "FX_RATE_CENTAVOS = 1850" in js
