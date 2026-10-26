@@ -13,7 +13,7 @@
   <link rel="canonical" href="https://legal.esforzados.com/">
   <link rel="icon" type="image/svg+xml" href="assets/brand.svg">
   <link rel="stylesheet" href="assets/legal.css">
-  <script src="assets/legal.js" defer></script>
+  <script type="module" src="assets/legal.js"></script>
   <title>Esforzados Legal | Servicios y acceso a clientes</title>
 </head>
 <body>
@@ -96,36 +96,58 @@
         <p class="eyebrow">03 / COTIZACIONES</p>
         <div class="section-intro">
           <h2 id="quotes-heading">Cotice sus <em>transcripciones.</em></h2>
-          <p>Calcule un importe estimado en pesos mexicanos a partir del volumen de hojas y los minutos de grabaciones. Para audio y video usamos una tarifa en USD y un tipo de cambio de referencia fijo.</p>
+          <p>Seleccione el servicio documental y sus cantidades. Los precios por hoja son fijos en pesos; audio y video se convierten con un tipo de cambio USD/MXN publicado y fechado.</p>
         </div>
         <div class="quote-grid">
           <div class="quote-options">
             <div class="quote-item">
-              <div><span class="quote-label">DOCUMENTOS</span><h3>Captura / transcripción de hojas</h3><p>Importe por cada hoja indicada.</p></div>
-              <strong>$2.00 <small>MXN / hoja</small></strong>
+              <div><span class="quote-label">DOCUMENTOS</span><h3>Digitalización y OCR</h3><p>Seleccione qué trabajos requiere sobre las hojas del expediente.</p></div>
+              <strong id="document-unit-price">$2.00 <small>MXN / hoja</small></strong>
+              <label for="document-service">Servicio documental</label>
+              <select id="document-service" name="document-service">
+                <option value="ocr_json" selected>OCR de hojas ya digitalizadas + JSON · $2.00/hoja</option>
+                <option value="scan_image">Escaneo físico + imagen digital · $2.50/hoja</option>
+                <option value="scan_ocr_json">Escaneo físico + OCR + JSON · $3.50/hoja</option>
+                <option value="managed">Escaneo + OCR + JSON + organización · $5.00/hoja</option>
+              </select>
               <label for="pages">Número de hojas</label>
               <input id="pages" type="number" min="0" max="1000000" step="1" inputmode="numeric" value="0">
               <output id="pages-total" for="pages">$0.00 MXN</output>
+              <p class="quote-explanation">Los precios por hoja no cambian con la cotización del dólar. Revisión humana, certificaciones y expedientes especiales requieren presupuesto propio.</p>
             </div>
             <div class="quote-item">
-              <div><span class="quote-label">GRABACIONES</span><h3>Transcripción de audio o video</h3><p>Minutos de grabación. Puede utilizar decimales (por ejemplo 2.5 minutos).</p><p>Equivalente: $12.19705 MXN/min (≈ $12.20), con tipo de cambio de referencia de $18.50 MXN/USD.</p></div>
+              <div><span class="quote-label">GRABACIONES</span><h3>Transcripción de audio o video</h3><p>Indique los minutos de grabación. Se admiten centésimas (por ejemplo, 2.50 min).</p><p id="fx-equivalent" class="quote-fx-equivalent">Consultando equivalente en pesos...</p></div>
               <strong>US$0.6593 <small>USD / minuto</small></strong>
               <label for="minutes">Minutos de audio o video</label>
               <input id="minutes" type="number" min="0" max="1000000" step="0.01" inputmode="decimal" value="0">
               <output id="minutes-total" for="minutes">$0.00 MXN</output>
+              <div class="fx-information">
+                <div><strong>Tipo de cambio USD → MXN:</strong> <span id="fx-rate">Consultando…</span></div>
+                <div id="fx-rate-date">Fecha de publicación: pendiente</div>
+                <div>Fuente: <a href="https://frankfurter.dev/" target="_blank" rel="noopener noreferrer">Frankfurter (referencia de mercado, no FIX de Banxico)</a></div>
+                <p id="fx-status" role="status" aria-live="polite">Consultando el último tipo de cambio publicado.</p>
+                <button class="refresh-rate" id="refresh-rate" type="button">Actualizar tipo de cambio</button>
+              </div>
             </div>
           </div>
           <aside class="quote-summary" aria-label="Resumen de cotización">
             <p class="eyebrow eyebrow-light">RESUMEN ESTIMADO</p>
             <h3>Total de su cotización</h3>
             <output id="grand-total" aria-live="polite">$0.00 MXN</output>
-            <div class="quote-breakdown"><span>Hojas</span><strong id="summary-pages">$0.00</strong></div>
+            <div class="quote-breakdown"><span id="summary-service-label">OCR de hojas ya digitalizadas + JSON</span><strong id="summary-pages">$0.00</strong></div>
+            <p class="quote-summary-detail" id="summary-pages-quantity">0 hojas × $2.00 MXN</p>
             <div class="quote-breakdown"><span>Audio y video</span><strong id="summary-minutes">$0.00</strong></div>
+            <p class="quote-summary-detail" id="summary-minutes-quantity">0 minutos × US$0.6593</p>
+            <div class="quote-meta">
+              <div><strong>Fecha y hora de cotización (Ciudad de México)</strong><span id="quote-issued-at">Se asignará al generar la cotización</span></div>
+              <div><strong>Tipo de cambio registrado</strong><span id="quote-fx-snapshot">Esperando consulta...</span></div>
+            </div>
             <div class="quote-rule"></div>
             <h4>Entrega de resultados</h4>
-            <p>Las transcripciones se entregarán en formato <strong>JSON estructurado</strong>, preparado para búsqueda, organización y tratamiento documental.</p>
-            <p class="quote-disclaimer">Estimación informativa, no es un pedido ni un pago. La conversión USD/MXN se calcula con un tipo de cambio fijo de referencia ($18.50 MXN/USD); el subtotal por grabación se redondea a centavos. Sujeto a revisión del material y confirmación del servicio. No incluye escaneo físico, OCR especializado ni certificaciones judiciales.</p>
-            <button class="button button-gold print-button" type="button" id="print-quote">Imprimir cotización <span aria-hidden="true">↗</span></button>
+            <p>Los trabajos que incluyen OCR o transcripción se entregarán en <strong>JSON estructurado</strong>; el escaneo básico incluye imágenes. La organización documental se realiza según el paquete seleccionado.</p>
+            <p class="quote-disclaimer">Precios orientativos para servicios definidos. IVA, revisión humana, certificaciones y condiciones especiales se cotizan por separado. El tipo de cambio es referencial y puede corresponder al último día hábil, no necesariamente al día de emisión. La fecha de publicación y la fecha de emisión se registran separadas. Una cotización descargada conserva su tasa y sus totales; la web no almacena cotizaciones en servidor.</p>
+            <button class="button button-gold print-button" type="button" id="download-quote" disabled>Descargar cotización JSON <span aria-hidden="true">↓</span></button>
+            <button class="button button-gold print-button" type="button" id="print-quote" disabled>Imprimir cotización <span aria-hidden="true">↗</span></button>
           </aside>
         </div>
       </div>
