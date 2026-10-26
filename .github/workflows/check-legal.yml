@@ -11,8 +11,13 @@ jobs:
         run: python3 tests/check_site.py
       - name: Validar PHP
         run: |
-          for file in acceso.php dashboard.php salir.php src/*.php bin/*.php; do
+          for file in acceso.php dashboard.php salir.php tipo-cambio.php src/*.php bin/*.php; do
             php -l "$file"
           done
       - name: Validar sintaxis JavaScript
-        run: node --check assets/legal.js
+        run: |
+          node --check assets/legal.js
+          node --check assets/pricing.mjs
+          node --test tests/pricing.test.mjs
+      - name: Validar conversión de divisas
+        run: php -d zend.assertions=1 -d assert.exception=1 tests/fx_rate_test.php

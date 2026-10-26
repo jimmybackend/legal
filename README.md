@@ -8,7 +8,7 @@ Portal de **Esforzados Legal**: página pública responsiva, cotizador de transc
 - **Servicios:** estudio documental, recursos legales con supervisión, digitalización, transcripciones, hallazgos y seguimiento.
 - **Clientes:** acceso por enlace/token de 256 bits, sin usuario y contraseña. Se almacena exclusivamente SHA-256 del token. Es de un solo uso y expira a los 7 días. Tras la redención se inicia una sesión con cookie Secure/HttpOnly/SameSite Strict, ID regenerado y vencimiento por inactividad de 4 horas.
 - **Dashboard:** ficha legal, lista de asuntos, avance porcentual de actividades, próximo paso, documentos visibles, hallazgos e historial. Todos los registros detallados están ocultos al cliente por defecto hasta que un operador habilite `client_visible=1`.
-- **Cotizador:** 2 MXN por hoja de captura/transcripción; US$0.6593 por minuto de audio/video a un cambio fijo de 18.50 MXN/USD (12.19705 MXN/min; admite fracciones de minuto); suma y opción de impresión. Entrega prevista en **JSON estructurado**. Es informativo: sin captura de pago ni pedidos.
+- **Cotizador:** cuatro precios fijos en MXN por hoja (OCR+JSON 2.00; escaneo+imagen 2.50; escaneo+OCR+JSON 3.50; organización 5.00). Audio/video cuesta US$0.6593 por minuto, convertido a MXN según la última tasa USD/MXN publicada por Frankfurter. Se muestran fecha y fuente de la tasa, fecha de emisión, subtotales y total. Permite imprimir y descargar JSON de la cotización con la tasa congelada. No es pedido ni pago.
 - **MySQL/MariaDB:** esquema nuevo en `sql/001_initial.sql` para clientes, asuntos, documentos, hallazgos, eventos y tokens. No contiene información personal real.
 - **S3:** el dashboard muestra solo **metadatos** de archivos; no implementa todavía descarga autenticada ni expone claves de objetos.
 
@@ -16,7 +16,7 @@ Portal de **Esforzados Legal**: página pública responsiva, cotizador de transc
 
 **No está desplegado automáticamente.** Requiere Nginx con TLS, PHP 8.1+ con PDO MySQL y una base de datos privada. No ejecutar esta app como GitHub Pages porque los controladores PHP no funcionarían.
 
-1. Revisar `deploy/nginx-legal.conf.example` y configurar un virtual host HTTPS para `legal.esforzados.com`. Ajustar el socket real de php-fpm, el directorio raíz y permisos. No permitir servir `src/`, `bin/`, `sql/`, `tests/` o `deploy/`. Las rutas PHP permitidas públicamente son solo `acceso.php`, `dashboard.php` y `salir.php`. Deshabilitar registro de la URL completa de `acceso.php` en Nginx, proxy y CDN.
+1. Revisar `deploy/nginx-legal.conf.example` y configurar un virtual host HTTPS para `legal.esforzados.com`. Ajustar el socket real de php-fpm, el directorio raíz y permisos. No permitir servir `src/`, `bin/`, `sql/`, `tests/` o `deploy/`. Las rutas PHP permitidas públicamente son `acceso.php`, `dashboard.php`, `salir.php` y `tipo-cambio.php`. Deshabilitar registro de la URL completa de `acceso.php` en Nginx, proxy y CDN.
 2. Crear una base o esquema **privado** con un usuario MySQL de permisos mínimos, con acceso exclusivo a las tablas `legal_*`. Aplicar manualmente `sql/001_initial.sql` con un usuario administrador de DB. **No aplicar migraciones a tablas existentes sin revisar conflictos.**
 3. Definir fuera del repositorio variables de entorno `LEGAL_DB_HOST`, `LEGAL_DB_PORT`, `LEGAL_DB_NAME`, `LEGAL_DB_USER`, `LEGAL_DB_PASSWORD`, `LEGAL_BASE_URL`. Revisar `.env.example` como lista; la aplicación **no carga .env automáticamente**: inyectarlas mediante el servicio php-fpm con controles de acceso adecuados.
 4. Registrar clientes/asuntos exclusivamente por la DB o un futuro panel administrativo. No existe un formulario público de alta y **no se entregan tokens predefinidos**. El campo `client_visible` inicia en 0 para todo asunto, documento, hallazgo o evento.
@@ -41,16 +41,35 @@ El enlace de descarga de S3 **no** se coloca en la página ni en la DB pública;
 
 Aunque el **código es público**, la base de datos y los archivos no deben serlo. Nada de contraseñas, credenciales AWS, tokens emitidos, expedientes reales, datos personales o URLs firmadas debe subirse a GitHub. Las salidas del dashboard usan escape HTML y consultas parametrizadas. Debe revisarse la protección de TLS, cabeceras de seguridad, permisos de BD, backups, logs, caducidad y acceso físico antes de operar con expedientes de producción. El enlace de un solo uso es un **factor de posesión**, no verificación adicional de identidad; entregar el enlace por un medio seguro es imprescindible.
 
-## Tarifas iniciales
+## Tarifas comerciales para cotización
 
-| Servicio | Regla | Entrega anunciada |
+| Servicio | Regla | Entregable |
 |---|---|---|
-| Captura/transcripción de hojas | 2 MXN × hojas | JSON estructurado |
-| Transcripción de audio o video | US$0.6593 × minutos × $18.50 MXN/USD (≈ $12.20 MXN/min) | JSON estructurado |
+| OCR de documentos ya digitalizados | $2.00 MXN por hoja | Texto extraído + JSON estructurado |
+| Escaneo físico de documentos | $2.50 MXN por hoja | Imagen digital |
+| Escaneo físico + OCR | $3.50 MXN por hoja | Imagen + texto + JSON |
+| Escaneo + OCR + organización documental | $5.00 MXN por hoja | Imagen + texto + JSON + organización |
+| Transcripción de audio o video | **US$0.6593/minuto** × tasa USD/MXN publicada | JSON estructurado |
 
-**Precisión monetaria:** la tarifa de audio/video es US$0.6593/min; la conversión exacta con tipo de cambio de referencia de $18.50 MXN/USD es **$12.19705 MXN/min** (aprox. **$12.20 MXN/min**). El resultado publicado inicialmente como $12.1973 era aproximado y no coincide exactamente con la multiplicación. El cotizador usa el precio USD original y redondea el subtotal en MXN a centavos. Este tipo de cambio es fijo, no en tiempo real.
+Los precios documentales están fijados en MXN y NO cambian al variar el dólar. La cotización de audio/video sí utiliza el tipo de cambio USD/MXN consultado a través de `tipo-cambio.php`, basado en el servicio público [Frankfurter v2](https://frankfurter.dev/) (`https://api.frankfurter.dev/v2/rate/USD/MXN`). **Frankfurter ofrece una tasa de referencia, no el FIX de Banxico ni una tasa de compraventa bancaria.** No requiere API key y puede publicar el último dato de día hábil (por ejemplo viernes en domingo). El precio final de audio/video se redondea al centavo del subtotal, no a la tarifa por minuto.
 
-Precios sujetos a confirmación del servicio; escaneo, OCR especializado, certificaciones y asesoría jurídica profesional no están incluidos automáticamente. La cotización no almacena datos ni constituye contratación.
+Para evitar errores, la interfaz expone por separado:
+- **Fecha de publicación de la tasa** proporcionada por Frankfurter, aunque sea anterior al día actual.
+- **Fecha y hora de emisión de la cotización** según el reloj del dispositivo, presentada en horario de Ciudad de México.
+- **Valor exacto consultado** expresado en MXN por USD y fuente.
+
+Al imprimir se fija esa referencia de cambio en la pantalla; al pulsar **Descargar cotización JSON**, la fecha, tasa, conceptos y totales quedan guardados en el archivo generado. No existe almacenamiento del historial de cotizaciones en servidor: para conservar una cotización es necesario guardar el JSON/PDF impreso, o implementar posteriormente almacenamiento privado. Si se pulsa **Actualizar tipo de cambio** se consulta otro valor y se recalcula el borrador; un JSON descargado anteriormente no cambia.
+
+**Seguridad del precio:** si el servicio no responde o entrega moneda, tasa o fecha inválida, no se cotiza audio/video; se permite seguir cotizando documentos por hoja. No hay cambio fijo inventado ni reversión a 18.50. Se usa caché temporal, cuando se habilita, máximo una hora. Los precios son orientativos, sujetos a revisión del material; IVA, corrección humana, certificaciones y casos especiales se cotizan aparte. El escaneo básico no anuncia OCR ni JSON de transcripción como si estuvieran incluidos.
+
+### Integración y operación del dólar
+
+- Configurar el virtual host Nginx para permitir `tipo-cambio.php` junto a los tres controladores anteriores. La consulta HTTP al exterior la hace PHP de la EC2, no el navegador del cliente. Activar `php-curl`, verificar certificados TLS y autorizar tráfico saliente HTTPS a `api.frankfurter.dev`.
+- Opcionalmente definir `LEGAL_FX_CACHE_DIR` apuntando a un directorio privado de escritura propiedad de php-fpm, **fuera del DocumentRoot**, por ejemplo `/var/lib/esforzados-legal/fx-cache`. No publicar ese directorio. Puede utilizarse APCu como caché alterna; de lo contrario se consulta la fuente en cada petición.
+- Verificar `https://legal.esforzados.com/tipo-cambio.php`, que deberá devolver JSON con `available=true`, `base=USD`, `quote=MXN`, `rate`, `rate_date`, `retrieved_at` y `source`. En fin de semana la `rate_date` probablemente será la del último día hábil.
+- La tasa es **informativa de mercado**. Si se necesita obligatoriamente el FIX oficial de Banxico para contratos, sustituir o añadir el proveedor oficial tras acordar los requisitos legales. No afirmar que se usa Banxico cuando se usa Frankfurter.
+
+No hay registro de información personal ni pedidos en este cotizador. El archivo JSON solo contiene los importes y parámetros de la cotización.
 
 ## Próximas integraciones
 

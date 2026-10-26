@@ -30,12 +30,14 @@ assert len(parsed.images) == 1, "Solo debe usarse la primera imagen aprobada del
 assert parsed.images[0].endswith("/assets/carousel-legal.png")
 assert any(f.get("action") == "acceso.php" and f.get("method") == "post" for f in parsed.forms)
 assert "$2.00" in html and "US$0.6593" in html
-assert "$11.00" not in html and "$12.19705" in html
-js = (ROOT / "assets/legal.js").read_text(encoding="utf8")
-assert "USD_RATE_1E4 = 6593" in js and "FX_RATE_CENTAVOS = 1850" in js
-from decimal import Decimal, ROUND_HALF_UP
-rate_mxn = Decimal("0.6593") * Decimal("18.50")
-assert rate_mxn == Decimal("12.197050")
-assert (rate_mxn * 60).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP) == Decimal("731.82")
+assert all(s in html for s in ['value="ocr_json"', 'value="scan_image"', 'value="scan_ocr_json"', 'value="managed"'])
+assert all(x in html for x in ["$2.50", "$3.50", "$5.00"])
+assert 'id="fx-rate-date"' in html and 'id="quote-issued-at"' in html
+assert 'id="download-quote"' in html and 'tipo-cambio.php' not in html
+assert "$11.00" not in html and "$18.50 MXN/USD" not in html
+js=(ROOT/"assets/legal.js").read_text(encoding="utf8")
+assert 'fetch("tipo-cambio.php"' in js
+assert 'exchange_rate_publication_date' in js and 'issued_at_mexico_city' in js
+assert 'exchange_rate_source' in js
 assert "JSON estructurado" in html
 print("OK: estructura responsive, imagen única, costos y acceso por token")
