@@ -29,6 +29,13 @@ assert parsed.links.count("https://esforzados.com/") >= 1
 assert len(parsed.images) == 1, "Solo debe usarse la primera imagen aprobada del carrusel"
 assert parsed.images[0].endswith("/assets/carousel-legal.png")
 assert any(f.get("action") == "acceso.php" and f.get("method") == "post" for f in parsed.forms)
-assert re.search(r"\$2\.00", html) and re.search(r"\$11\.00", html)
+assert re.search(r"\\$2\\.00", html) and "US$0.6593" in html
+assert "$11.00" not in html and "$12.19705" in html
+js = (ROOT / "assets/legal.js").read_text(encoding="utf8")
+assert "USD_RATE_1E4 = 6593" in js and "FX_RATE_CENTAVOS = 1850" in js
+from decimal import Decimal, ROUND_HALF_UP
+rate_mxn = Decimal("0.6593") * Decimal("18.50")
+assert rate_mxn == Decimal("12.197050")
+assert (rate_mxn * 60).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP) == Decimal("731.82")
 assert "JSON estructurado" in html
 print("OK: estructura responsive, imagen única, costos y acceso por token")
