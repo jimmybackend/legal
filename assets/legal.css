@@ -78,3 +78,23 @@ h1,h2,h3{line-height:1.14;letter-spacing:-.035em}h2{font-size:clamp(32px,4.1vw,5
 }
 @media print{.site-header,.menu-toggle,.hero,.service-grid,.clients-section,.footer,.quote-options,.print-button{display:none!important}.quotes-section{padding:0}.section-intro{margin-bottom:25px}.quote-grid{display:block}.quote-summary{color:#000;background:#fff;border:1px solid #999}.quote-summary *{color:#000!important}body{background:#fff}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}}
+
+/* Paquetes documentales y tipo de cambio público con fecha verificable. */
+.quote-item select{grid-column:1/3;min-width:0;width:100%;padding:13px 15px;border:1px solid #c9b9a7;border-radius:6px;background:#fff;color:var(--ink);font:inherit;font-size:13px}
+.quote-item .quote-explanation{grid-column:1/3;margin-top:3px;color:#77695e;line-height:1.6}
+.fx-information{grid-column:1/3;background:#f7f2e9;border:1px solid #e6d8c6;border-radius:8px;padding:16px;color:#534033;font-size:12px;line-height:1.7}
+.fx-information strong{font-size:12px}.fx-information a{color:#744923;text-decoration:underline;text-underline-offset:2px}
+.fx-information p{margin:6px 0!important}.quote-item .quote-fx-equivalent{margin-top:5px;color:#76512b;font-weight:700}
+.refresh-rate{border:1px solid #aa8463;border-radius:5px;background:#fff;padding:8px 12px;color:#553724;font-size:12px;font-weight:700}
+.refresh-rate:disabled{cursor:wait;opacity:.6}
+.quote-summary-detail{margin:-3px 0 9px!important;color:#c9b6a0!important;font-size:11px!important}
+.quote-meta{display:grid;gap:10px;border-top:1px solid #695143;margin-top:18px;padding-top:15px;font-size:12px}
+.quote-meta div{display:grid;gap:2px}.quote-meta strong{font-weight:700;color:#ebd9c8}.quote-meta span{color:#d7c8b9;overflow-wrap:anywhere}
+.button:disabled{cursor:not-allowed;opacity:.5;transform:none;filter:none}
+.quote-summary .button + .button{margin-top:10px}
+@media(max-width:520px){.quote-item select,.quote-item .quote-explanation,.fx-information{grid-column:1}}
+@media print{
+  .refresh-rate,.quote-summary .button{display:none!important}
+  .quote-meta{border-top:1px solid #ccc}
+  .quote-summary-detail{color:#222!important}
+}
