@@ -12,6 +12,10 @@ Portal de **Esforzados Legal**: página pública responsiva, cotizador de transc
 - **MySQL/MariaDB:** esquema nuevo en `sql/001_initial.sql` para clientes, asuntos, documentos, hallazgos, eventos y tokens. No contiene información personal real.
 - **S3:** el dashboard muestra solo **metadatos** de archivos; no implementa todavía descarga autenticada ni expone claves de objetos.
 
+## Instalación de vista previa en EC2
+
+El despliegue aislado a \`/var/www/legal\` está documentado en [deploy/ec2/README.md](deploy/ec2/README.md). El preview inicial propuesto es \`http://legal.50.17.162.57.sslip.io/index.html?v=1\` y **no ejecuta PHP por HTTP**. Para el dashboard y la cotización USD/MXN se necesita HTTPS y completar la configuración del vhost seguro. El instalador no ejecuta migraciones, no modifica otros vhosts ni toca AWS directamente.
+
 ## Implementación en servidor
 
 **No está desplegado automáticamente.** Requiere Nginx con TLS, PHP 8.1+ con PDO MySQL y una base de datos privada. No ejecutar esta app como GitHub Pages porque los controladores PHP no funcionarían.
