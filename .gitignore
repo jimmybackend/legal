@@ -1,0 +1,7 @@
+.env
+.env.*
+!.env.example
+*.log
+vendor/
+node_modules/
+tmp/

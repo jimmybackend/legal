@@ -1,0 +1,24 @@
+# Fragmento orientativo para un server HTTPS existente.
+# Revisar y adaptar paths y pool php-fpm de la EC2 antes de habilitar.
+# El directorio web es el checkout del repositorio legal.
+#
+# server {
+#   listen 443 ssl http2;
+#   server_name legal.esforzados.com;
+#   root /var/www/legal;
+#   index index.html;
+#
+#   location / { try_files $uri $uri/ =404; }
+#   location ~ ^/(src|bin|sql|deploy|tests|\.github)/ { return 404; }
+#   location ~ /\.(?!well-known) { return 404; }
+#   location ~ ^/(dashboard|acceso|salir)\.php$ {
+#       access_log off; # evita registrar tokens en URL (acceso.php?token=...)
+#       add_header Referrer-Policy "no-referrer" always;
+#       include fastcgi_params;
+#       fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+#       fastcgi_param HTTPS on;
+#       fastcgi_pass unix:/run/php-fpm/www.sock; # validar nombre real del socket
+#   }
+#   location ~ \.php$ { return 404; } # negar otros PHP
+# }
+# PROTEGER: logs de proxies/CDN, redirección HTTP->HTTPS, backups, usuarios DB.
