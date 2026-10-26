@@ -21,3 +21,9 @@ jobs:
           node --test tests/pricing.test.mjs
       - name: Validar conversión de divisas
         run: php -d zend.assertions=1 -d assert.exception=1 tests/fx_rate_test.php
+
+      - name: Comprobar scripts de instalación EC2
+        run: |
+          bash -n deploy/ec2/install-preview.sh
+          bash -n deploy/ec2/legal-update.sh
+          python3 tests/check_deploy.py
