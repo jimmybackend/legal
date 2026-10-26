@@ -26,7 +26,6 @@ h1,h2,h3{line-height:1.14;letter-spacing:-.035em}h2{font-size:clamp(32px,4.1vw,5
 .hero-topline span:last-child{color:#c7bab0;letter-spacing:0}
 .legal-artwork{margin:0;border:1px solid #786047;border-radius:14px;background:#160f0c;overflow:hidden;box-shadow:0 25px 65px rgba(0,0,0,.25)}
 .legal-artwork>a{display:block}.legal-artwork img{display:block;width:100%;height:auto;aspect-ratio:1916/821;object-fit:contain;background:#160f0c}
-.hero-caption{display:flex;justify-content:space-between;gap:22px;align-items:center;padding:17px 23px;border-top:1px solid #6e5138;background:#1c1511;color:#e7d9c7;font-size:12px}
 .button{display:inline-flex;justify-content:center;align-items:center;gap:15px;border:0;border-radius:5px;padding:13px 20px;font-size:13px;font-weight:750;transition:transform .15s,filter .15s}
 .button:hover{transform:translateY(-2px);filter:brightness(1.06)}.button-light{background:#fff;color:#2c1c15}.button-gold{background:var(--gold);color:#24170f}
 .section{padding:80px 0}.eyebrow{font-size:11px;font-weight:800;letter-spacing:.16em;color:#926339}.eyebrow-light{color:var(--gold)}
@@ -70,7 +69,6 @@ h1,h2,h3{line-height:1.14;letter-spacing:-.035em}h2{font-size:clamp(32px,4.1vw,5
 @media(max-width:760px){.container{width:calc(100% - 36px)}.header-inner{min-height:73px}.menu-toggle{display:block}.navigation{display:none;position:absolute;top:100%;left:0;right:0;padding:15px 19px 20px;background:#17110f;flex-direction:column;align-items:stretch;gap:0;box-shadow:0 18px 28px rgba(0,0,0,.3)}
 .navigation.is-open{display:flex}.navigation>a{padding:12px;border-bottom:1px solid #4b3830}.navigation .nav-action{text-align:center;margin-top:8px}
 .hero{padding:20px 0 26px}.hero-topline{font-size:10px}.hero-topline span:last-child{display:none}
-.hero-caption{flex-direction:column;align-items:stretch;padding:16px}.hero-caption .button{width:100%}
 .section{padding:60px 0}.section-intro{display:block}.section-intro p{margin-top:17px}.clients-layout,.quote-grid{grid-template-columns:1fr}.access-card{padding:26px}
 }
 @media(max-width:520px){.container{width:calc(100% - 28px)}.brand-symbol{width:42px;height:42px}.brand-wordmark strong{font-size:18px}.brand-wordmark em{font-size:16px}.brand-wordmark small{font-size:7px}
