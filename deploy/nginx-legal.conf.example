@@ -11,7 +11,7 @@
 #   location / { try_files $uri $uri/ =404; }
 #   location ~ ^/(src|bin|sql|deploy|tests|\.github)/ { return 404; }
 #   location ~ /\.(?!well-known) { return 404; }
-#   location ~ ^/(dashboard|acceso|salir)\.php$ {
+#   location ~ ^/(dashboard|acceso|salir|tipo-cambio)\.php$ {
 #       access_log off; # evita registrar tokens en URL (acceso.php?token=...)
 #       add_header Referrer-Policy "no-referrer" always;
 #       include fastcgi_params;
@@ -22,3 +22,6 @@
 #   location ~ \.php$ { return 404; } # negar otros PHP
 # }
 # PROTEGER: logs de proxies/CDN, redirección HTTP->HTTPS, backups, usuarios DB.
+
+# El servicio /tipo-cambio.php requiere PHP cURL y acceso saliente HTTPS a api.frankfurter.dev.
+# LEGAL_FX_CACHE_DIR debe ser privado y estar FUERA de /var/www/legal.
