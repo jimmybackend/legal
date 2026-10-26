@@ -96,7 +96,7 @@
         <p class="eyebrow">03 / COTIZACIONES</p>
         <div class="section-intro">
           <h2 id="quotes-heading">Cotice sus <em>transcripciones.</em></h2>
-          <p>Calcule un importe estimado en pesos mexicanos a partir del volumen de hojas y los minutos de grabaciones.</p>
+          <p>Calcule un importe estimado en pesos mexicanos a partir del volumen de hojas y los minutos de grabaciones. Para audio y video usamos una tarifa en USD y un tipo de cambio de referencia fijo.</p>
         </div>
         <div class="quote-grid">
           <div class="quote-options">
@@ -108,8 +108,8 @@
               <output id="pages-total" for="pages">$0.00 MXN</output>
             </div>
             <div class="quote-item">
-              <div><span class="quote-label">GRABACIONES</span><h3>Transcripción de audio o video</h3><p>Minutos de grabación. Puede utilizar decimales (por ejemplo 2.5 minutos).</p></div>
-              <strong>$11.00 <small>MXN / minuto</small></strong>
+              <div><span class="quote-label">GRABACIONES</span><h3>Transcripción de audio o video</h3><p>Minutos de grabación. Puede utilizar decimales (por ejemplo 2.5 minutos).</p><p>Equivalente: $12.19705 MXN/min (≈ $12.20), con tipo de cambio de referencia de $18.50 MXN/USD.</p></div>
+              <strong>US$0.6593 <small>USD / minuto</small></strong>
               <label for="minutes">Minutos de audio o video</label>
               <input id="minutes" type="number" min="0" max="1000000" step="0.01" inputmode="decimal" value="0">
               <output id="minutes-total" for="minutes">$0.00 MXN</output>
@@ -124,7 +124,7 @@
             <div class="quote-rule"></div>
             <h4>Entrega de resultados</h4>
             <p>Las transcripciones se entregarán en formato <strong>JSON estructurado</strong>, preparado para búsqueda, organización y tratamiento documental.</p>
-            <p class="quote-disclaimer">Estimación informativa, no es un pedido ni un pago. Sujeto a revisión del material y confirmación del servicio. No incluye escaneo físico, OCR especializado ni certificaciones judiciales.</p>
+            <p class="quote-disclaimer">Estimación informativa, no es un pedido ni un pago. La conversión USD/MXN se calcula con un tipo de cambio fijo de referencia ($18.50 MXN/USD); el subtotal por grabación se redondea a centavos. Sujeto a revisión del material y confirmación del servicio. No incluye escaneo físico, OCR especializado ni certificaciones judiciales.</p>
             <button class="button button-gold print-button" type="button" id="print-quote">Imprimir cotización <span aria-hidden="true">↗</span></button>
           </aside>
         </div>

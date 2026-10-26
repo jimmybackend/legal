@@ -17,9 +17,13 @@
   const pages = document.getElementById("pages");
   const minutes = document.getElementById("minutes");
   const currency = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" });
+  // Tarifa promedio: USD 0.6593/min × 18.50 MXN/USD = 12.19705 MXN/min.
+  // Cálculo entero: tarifa en diezmilésimas de USD y tipo de cambio en centavos.
+  const USD_RATE_1E4 = 6593;
+  const FX_RATE_CENTAVOS = 1850;
   function quantity(control, whole) {
     const number = Number(control?.value ?? 0);
-    if (!Number.isFinite(number) || number < 0 || number > 1000000 || (whole && !Number.isInteger(number))) return null;
+    if (!Number.isFinite(number) || number < 0 || number > 1000000 || (whole && !Number.isInteger(number)) || (!whole && Math.abs(number * 100 - Math.round(number * 100)) > 1e-7)) return null;
     return number;
   }
   function updateQuote() {
@@ -28,7 +32,11 @@
     const m = quantity(minutes, false);
     const valid = p !== null && m !== null;
     const documentTotal = valid ? Math.round(p * 200) / 100 : 0;
-    const recordingTotal = valid ? Math.round(m * 1100) / 100 : 0;
+    // Convertir a centavos de MXN y redondear únicamente el subtotal final.
+    // Evita pérdidas por redondear prematuramente la tarifa por minuto.
+    const recordingTotal = valid
+      ? Math.round(Math.round(m * 100) * USD_RATE_1E4 * FX_RATE_CENTAVOS / 1000000) / 100
+      : 0;
     const set = (id, value) => { const element = document.getElementById(id); if (element) element.textContent = value; };
     const format = amount => currency.format(amount);
     set("pages-total", valid ? format(documentTotal) : "Cantidad inválida");

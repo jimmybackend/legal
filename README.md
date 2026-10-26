@@ -8,7 +8,7 @@ Portal de **Esforzados Legal**: página pública responsiva, cotizador de transc
 - **Servicios:** estudio documental, recursos legales con supervisión, digitalización, transcripciones, hallazgos y seguimiento.
 - **Clientes:** acceso por enlace/token de 256 bits, sin usuario y contraseña. Se almacena exclusivamente SHA-256 del token. Es de un solo uso y expira a los 7 días. Tras la redención se inicia una sesión con cookie Secure/HttpOnly/SameSite Strict, ID regenerado y vencimiento por inactividad de 4 horas.
 - **Dashboard:** ficha legal, lista de asuntos, avance porcentual de actividades, próximo paso, documentos visibles, hallazgos e historial. Todos los registros detallados están ocultos al cliente por defecto hasta que un operador habilite `client_visible=1`.
-- **Cotizador:** 2 MXN por hoja de captura/transcripción; 11 MXN por minuto de audio/video (admite fracciones de minuto); suma y opción de impresión. Entrega prevista en **JSON estructurado**. Es informativo: sin captura de pago ni pedidos.
+- **Cotizador:** 2 MXN por hoja de captura/transcripción; US$0.6593 por minuto de audio/video a un cambio fijo de 18.50 MXN/USD (12.19705 MXN/min; admite fracciones de minuto); suma y opción de impresión. Entrega prevista en **JSON estructurado**. Es informativo: sin captura de pago ni pedidos.
 - **MySQL/MariaDB:** esquema nuevo en `sql/001_initial.sql` para clientes, asuntos, documentos, hallazgos, eventos y tokens. No contiene información personal real.
 - **S3:** el dashboard muestra solo **metadatos** de archivos; no implementa todavía descarga autenticada ni expone claves de objetos.
 
@@ -46,7 +46,9 @@ Aunque el **código es público**, la base de datos y los archivos no deben serl
 | Servicio | Regla | Entrega anunciada |
 |---|---|---|
 | Captura/transcripción de hojas | 2 MXN × hojas | JSON estructurado |
-| Transcripción de audio o video | 11 MXN × minutos | JSON estructurado |
+| Transcripción de audio o video | US$0.6593 × minutos × $18.50 MXN/USD (≈ $12.20 MXN/min) | JSON estructurado |
+
+**Precisión monetaria:** la tarifa de audio/video es US$0.6593/min; la conversión exacta con tipo de cambio de referencia de $18.50 MXN/USD es **$12.19705 MXN/min** (aprox. **$12.20 MXN/min**). El resultado publicado inicialmente como $12.1973 era aproximado y no coincide exactamente con la multiplicación. El cotizador usa el precio USD original y redondea el subtotal en MXN a centavos. Este tipo de cambio es fijo, no en tiempo real.
 
 Precios sujetos a confirmación del servicio; escaneo, OCR especializado, certificaciones y asesoría jurídica profesional no están incluidos automáticamente. La cotización no almacena datos ni constituye contratación.
 
