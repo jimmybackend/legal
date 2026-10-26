@@ -25,7 +25,12 @@ html = (ROOT / "index.html").read_text(encoding="utf8")
 parsed = Parser()
 parsed.feed(html)
 assert {"inicio", "servicios", "clientes", "cotizaciones", "pages", "minutes", "grand-total"} <= parsed.ids
-assert parsed.links.count("https://esforzados.com/") >= 1
+assert "https://esforzados.com/" not in parsed.links, "Legal no debe redirigir al portal principal"
+assert "Visitar el portal principal" not in html
+assert "Atención jurídica y control documental con herramientas digitales." not in html
+assert "Imagen institucional ilustrativa." not in html
+assert 'class="hero-caption"' not in html
+assert all(target in parsed.links for target in ["#servicios", "#clientes", "#cotizaciones"])
 assert len(parsed.images) == 1, "Solo debe usarse la primera imagen aprobada del carrusel"
 assert parsed.images[0].endswith("/assets/carousel-legal.png")
 assert any(f.get("action") == "acceso.php" and f.get("method") == "post" for f in parsed.forms)
